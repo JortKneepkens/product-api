@@ -16,12 +16,9 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService service;
-    RedisTemplate<String, Object> redisTemplate;
 
-    public ProductController(ProductService service,
-                             RedisTemplate<String, Object> redis) {
+    public ProductController(ProductService service) {
         this.service = service;
-        this.redisTemplate = redis;
     }
 
     @GetMapping
@@ -29,13 +26,5 @@ public class ProductController {
             @RequestParam(defaultValue = "eur") String currency
     ) {
         return service.getAllEnriched(currency);
-    }
-
-    @GetMapping("/debug/cache")
-    public Map<String, Object> debug() {
-        return Map.of(
-                "productsKeyExists", redisTemplate.hasKey("products"),
-                "ratesKeyExists", redisTemplate.hasKey("rates")
-        );
     }
 }

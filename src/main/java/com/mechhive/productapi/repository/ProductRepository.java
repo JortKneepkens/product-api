@@ -22,20 +22,16 @@ public class ProductRepository {
     }
 
     public List<Product> findAll() {
-        var cached = cache.get();
-        return cached != null ? cached : List.of();
+        return cache.getAll();
     }
 
     public List<Product> findByIds(Collection<Long> ids) {
-        Set<Long> idSet = Set.copyOf(ids);
-        return findAll().stream()
-                .filter(p -> idSet.contains(p.id()))
-                .toList();
+        return cache.getMany(ids);
     }
 
     /** Called by scheduler on startup + every 5 minutes */
     public void refresh() {
-        var apiProducts = client.fetchProducts().stream()
+        List<Product> apiProducts = client.fetchProducts().stream()
                 .map(p -> new Product(
                         p.id(),
                         p.title(),
@@ -44,6 +40,6 @@ public class ProductRepository {
                 ))
                 .toList();
 
-        cache.save(apiProducts);
+        cache.saveAll(apiProducts);
     }
 }

@@ -2,6 +2,7 @@ package com.mechhive.productapi.repository;
 
 import com.mechhive.productapi.cache.RedisCurrencyCache;
 import com.mechhive.productapi.client.CurrencyApiClient;
+import com.mechhive.productapi.error.UnsupportedCurrencyException;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -20,9 +21,15 @@ public class CurrencyRepository {
         this.cache  = cache;
     }
 
+    /**
+     * Domain-friendly access to all rates as BigDecimal.
+     * Currently not used
+     */
     public Map<String, BigDecimal> getRates() {
-        Map<String, Double> raw = cache.get();
-        if (raw == null) return Map.of();
+        Map<String, Double> raw = cache.getAll();
+        if (raw == null || raw.isEmpty()) {
+            return Map.of();
+        }
 
         return raw.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -32,14 +39,11 @@ public class CurrencyRepository {
     }
 
     public BigDecimal getRate(String currencyCode) {
-        String key = currencyCode.toLowerCase(Locale.ROOT);
-        Map<String, BigDecimal> rates = getRates();
-
-        BigDecimal rate = rates.get(key);
-        if (rate == null) {
-            throw new IllegalArgumentException("Unsupported currency: " + currencyCode);
+        Double raw = cache.getRate(currencyCode);
+        if (raw == null) {
+            throw new UnsupportedCurrencyException(currencyCode);
         }
-        return rate;
+        return BigDecimal.valueOf(raw);
     }
 
     public void refresh() {
