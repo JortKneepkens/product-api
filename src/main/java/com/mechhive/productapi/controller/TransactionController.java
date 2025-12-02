@@ -3,6 +3,7 @@ package com.mechhive.productapi.controller;
 import com.mechhive.productapi.model.Transaction;
 import com.mechhive.productapi.model.request.TransactionRequest;
 import com.mechhive.productapi.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction create(@RequestBody TransactionRequest req) {
+    public Transaction create(@Valid @RequestBody TransactionRequest req) {
         return service.createTransaction(req.productIds(), req.currency());
     }
 }

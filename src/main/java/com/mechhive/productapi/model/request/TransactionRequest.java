@@ -9,7 +9,7 @@ import java.util.List;
 
 public record TransactionRequest(
         @NotEmpty(message = "productIds cannot be empty")
-        List<@NotNull(message = "productId cannot be null")
+        List< @NotNull(message = "productId cannot be null")
         @Positive(message = "productId must be a positive integer")
             Long> productIds,
 
