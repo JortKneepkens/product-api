@@ -22,7 +22,7 @@ public class CacheWarmupScheduler {
 
     @PostConstruct
     public void init() {
-        refresh();
+        this.refresh();
     }
 
     @Scheduled(fixedRate = 300_000) // Exactly every 5 minutes

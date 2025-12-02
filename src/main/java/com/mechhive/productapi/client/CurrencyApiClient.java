@@ -24,7 +24,7 @@ public class CurrencyApiClient {
         );
 
         return Optional.ofNullable(response)
-                .map(CurrencyApiResponse::rates)
+                .map(CurrencyApiResponse::eur)
                 .orElseThrow(() -> new IllegalStateException("Currency API returned invalid data"));
     }
 }

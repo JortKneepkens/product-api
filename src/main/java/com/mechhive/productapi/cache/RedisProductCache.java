@@ -29,6 +29,8 @@ public class RedisProductCache {
     }
 
     public List<Product> get() {
-        return accessor.getAs(redis, KEY, new TypeReference<List<Product>>() {});
+        Object raw = redis.opsForValue().get(KEY);
+        if (raw == null) return null;
+        return accessor.read(raw, new TypeReference<List<Product>>() {});
     }
 }

@@ -1,10 +1,11 @@
 package com.mechhive.productapi.cache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @Component
@@ -23,11 +24,13 @@ public class RedisCurrencyCache {
         this.accessor = accessor;
     }
 
-    public void save(Map<String, BigDecimal> rates) {
+    public void save(Map<String, Double> rates) {
         redis.opsForValue().set(KEY, rates);
     }
 
-    public Map<String, BigDecimal> get() {
-        return accessor.getAs(redis, KEY, new TypeReference<Map<String, BigDecimal>>() {});
+    public Map<String, Double> get() {
+        Object raw = redis.opsForValue().get(KEY);
+        if (raw == null) return null;
+        return accessor.read(raw, new TypeReference<Map<String, Double>>() {});
     }
 }

@@ -41,6 +41,7 @@ public class ProductService {
 
     private List<EnrichedProduct> enrichProducts(List<Product> products, String currencyCode) {
         BigDecimal fxRate = currencyRepository.getRate(currencyCode);
+
         ProductEnrichmentContext ctx = new ProductEnrichmentContext(currencyCode, fxRate);
 
         return products.stream()
