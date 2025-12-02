@@ -39,10 +39,6 @@ public class ProductService {
     public List<EnrichedProduct> getEnrichedByIds(Collection<Long> ids, String currencyCode) {
         List<Product> products = productRepository.findByIds(ids);
 
-        if (products.size() != ids.size()) {
-            handleMissingProduct(ids, products);
-        }
-
         return enrichProducts(products, currencyCode);
     }
 
@@ -54,19 +50,5 @@ public class ProductService {
         return products.stream()
                 .map(p -> pipeline.enrich(p, ctx))
                 .toList();
-    }
-
-    private void handleMissingProduct(Collection<Long> requestedIds, List<Product> foundProducts) {
-        // Determine which ID is missing
-        var foundIds = foundProducts.stream()
-                .map(Product::id)
-                .collect(Collectors.toSet());
-
-        requestedIds.stream()
-                .filter(id -> !foundIds.contains(id))
-                .findFirst()
-                .ifPresent(missing -> {
-                    throw new ProductNotFoundException(missing);
-                });
     }
 }
