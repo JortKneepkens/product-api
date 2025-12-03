@@ -22,13 +22,14 @@ Because it ensures consistent errors and good UX without over-exposing internals
 1. Clone the repo
 2. Start via Docker
    `docker compose up --build`
+3. Or use the Makefile
 
 
 API is now available at:
 http://localhost:8080
 
 OpenAPI:
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/swagger
 
 ## 🧪 Running Tests
 
