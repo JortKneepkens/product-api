@@ -1,6 +1,5 @@
 # Compose files
 COMPOSE = docker compose
-DEV_COMPOSE = -f docker-compose.yml -f docker-compose.override.yml
 
 # Container names
 SPRING_CONTAINER = product-api
@@ -11,16 +10,16 @@ REDIS = redis
 # ===================================================================
 
 # Build development environment
-dev-build:
-	$(COMPOSE) $(DEV_COMPOSE) build --no-cache
+build:
+	$(COMPOSE) build --no-cache
 
 # Start development environment (with auto-reload + mounted volumes)
-dev:
-	$(COMPOSE) $(DEV_COMPOSE) up
+up:
+	$(COMPOSE) up
 
 # Stop and remove containers (dev)
-dev-down:
-	$(COMPOSE) $(DEV_COMPOSE) down --remove-orphans
+down:
+	$(COMPOSE) down --remove-orphans
 
 # Tail logs from dev container
 logs:
@@ -37,22 +36,6 @@ test:
 # Run a specific test class
 test-class:
 	docker exec -it $(SPRING_CONTAINER) ./mvnw -Dtest=$(TEST) test
-
-# ===================================================================
-# 🚀 Production Commands
-# ===================================================================
-
-# Start production environment (jar-based)
-prod:
-	$(COMPOSE) up --build -d
-
-# Stop prod containers
-prod-down:
-	$(COMPOSE) down --remove-orphans
-
-# Tail production logs
-prod-logs:
-	docker logs -f $(SPRING_CONTAINER)
 
 # ===================================================================
 # 🧹 Cleaning & Utilities

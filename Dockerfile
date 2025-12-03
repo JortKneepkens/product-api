@@ -1,4 +1,5 @@
-FROM eclipse-temurin:21-jdk AS builder
+# --- Build Stage ---
+FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 
 # Copy Maven wrapper and config
@@ -6,22 +7,21 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies
-RUN ./mvnw dependency:go-offline
+# Download dependencies (faster subsequent builds)
+RUN ./mvnw -q dependency:go-offline
 
 # Copy source
 COPY src ./src
 
 # Build the application
-RUN ./mvnw package -DskipTests
+RUN ./mvnw -q package -DskipTests
 
-# -- Runtime Stage --
+# --- Runtime Stage ---
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Copy jar
+# Copy jar from builder
 COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

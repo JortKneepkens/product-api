@@ -35,3 +35,18 @@ http://localhost:8080/swagger-ui/index.html
 **Unit Tests**
 
 Run `./mvnw test` from your local directory
+
+## Example request body
+### Request: POST `/transactions`
+
+Request body:
+````
+{
+  "productIds": [
+    1, 4, 5
+  ],
+  "currency": "USD"
+}
+````
+
+### Request: GET `/products?currency=eur`
